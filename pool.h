@@ -1,0 +1,3 @@
+struct BlockHeader{
+    BlockHeader* next;
+};
