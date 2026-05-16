@@ -44,11 +44,46 @@ MemoryPool* initializeMemoryPool(size_t blockSize, int numBlocks) {
     return pool;
 }
 
-int main() {
+BlockHeader* allocateMemory(MemoryPool* pool) {
+    if (pool->head==nullptr) {
+        std::cout<<"Memory exhausted!"<<std::endl;
+        return nullptr;
+    }
+    BlockHeader* temp = pool->head;
+    pool->head = pool->head->next;
+    return temp;
+}
 
+void freeMemory(MemoryPool* pool, BlockHeader* obj) {
+    BlockHeader* temp = pool->head;
+    pool->head = obj;
+    obj->next = temp;
+    return;
+}
+
+int main() {
     int numBlocks = 10;
     size_t blockSize = 8;
-    MemoryPool* temp = initializeMemoryPool(blockSize, numBlocks);
-    std::cout<<temp->head<<std::endl;
+    MemoryPool* pool = initializeMemoryPool(blockSize, numBlocks);
+    std::cout<<pool->head<<std::endl;
+    BlockHeader* obj = allocateMemory(pool);
+    BlockHeader* obj1 = allocateMemory(pool);
+    BlockHeader* obj2 = allocateMemory(pool);
+    std::cout<<obj<<std::endl;
+    BlockHeader* temp1 = pool->head;
+    int count = 0;
+    while (temp1!=nullptr) {
+        count++;
+        temp1 = temp1->next;
+    }
+    std::cout<<count<<std::endl;
+    count = 0;
+    // freeMemory(pool, obj, blockSize, 2);
+    temp1 = pool->head;
+    while (temp1!=nullptr) {
+        count++;
+        temp1 = temp1->next;
+    }
+    std::cout<<count<<std::endl;
     return 0;
 } 
